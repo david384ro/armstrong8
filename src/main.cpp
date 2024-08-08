@@ -106,10 +106,16 @@ int main() {
     CPU cpu;
     initialize_cpu(&cpu);
 
+    // sample program
     uint8_t program[] = {
-        LDA_IMMEDIATE, 97,
-        STA_ZERO_PAGE, 0x1,
-        BRK
+        LDA_IMMEDIATE, 0x05,
+        INX,
+        ADD, 0x0A,
+        SUB, 0x03,
+        BEQ, 0x10,
+
+        STA_ZERO_PAGE, 0x00,
+        BRK,
     };
 
     load_program(&cpu, program, sizeof(program), 0x00);

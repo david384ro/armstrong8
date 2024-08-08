@@ -5,3 +5,4 @@
 *.o
 *.bin
 *.exe
+src/main.o
