@@ -10,6 +10,7 @@
 #endif
 
 #include "include/cpu_run.hpp"
+#include "include/ppu/ppu_main.hpp"
 
 void create_directory(const std::string& folder) {
     #ifdef _WIN32
@@ -117,7 +118,7 @@ int main() {
     CPU cpu;
     initialize_cpu(&cpu);
 
-    uint8_t program[] = {0xa9, 0xff, 0x89, 0xe8, 0x64, 0xff, 0xd0, 0x02, 0x01};
+    uint8_t program[] = {0x12, 0xff, 0x0a, 0x15, 0x07, 0xff, 0x18, 0x02, 0x00};
 
     load_program(&cpu, program, sizeof(program), 0x00);
     save_rom(&cpu, "rom");

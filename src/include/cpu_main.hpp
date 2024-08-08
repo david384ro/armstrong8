@@ -6,15 +6,15 @@
 #define CPU_MAIN_H
 
 struct CPU {
-    uint8_t A;      // Accumulator
-    uint8_t X;      // X Register
-    uint8_t Y;      // Y Register
-    uint8_t SP;     // Stack Pointer
-    uint16_t PC;     // Program Counter
-    uint8_t flags;  // Processor Status
+    uint8_t A;
+    uint8_t X;
+    uint8_t Y;
+    uint8_t SP;
+    uint16_t PC;
+    uint8_t flags;
 
-    uint8_t ram[255]; // 8-bit RAM memory, will be changed later
-    uint8_t xram[511]; // 8-bit EXTENDED RAM memory, will be changed later
+    uint8_t ram[255]; // 8-bit ZERO PAGE
+    uint8_t xram[1536]; // 8-bit NEXT PAGE (can be used as vram)
     uint8_t rom[32767]; // 8-bit ROM memory, will be changed later
     bool halted;
 };
