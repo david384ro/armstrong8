@@ -1,7 +1,7 @@
 # Variables
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++11
-TARGET = bin/cpu_emulator.exe
+TARGET = bin/armstrong
 
 # Source files
 SRCS = src/main.cpp

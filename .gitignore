@@ -1,5 +1,7 @@
 /.vscode/
-/bin/
+/rom/
+/cpu/
+/rom/
 *.o
 *.bin
 *.exe
