@@ -117,14 +117,7 @@ int main() {
     CPU cpu;
     initialize_cpu(&cpu);
 
-    uint8_t program[] = {
-        LDA_IMMEDIATE, 0xFF,   // 0x00: Load A with 0xFF
-        STAX_ZERO_PAGE,    // 0x02: Store A at ram[X]
-        INX,                   // 0x03: Increment X
-        CMX, 0xFF,             // 0x04: Compare X with 0xFF
-        BNE, 0x02,             // 0x07: If X != 0xFF, jump back to 0x02
-        BRK                    // 0x09: Break
-    };
+    uint8_t program[] = {0xa9, 0xff, 0x89, 0xe8, 0x64, 0xff, 0xd0, 0x02, 0x01};
 
     load_program(&cpu, program, sizeof(program), 0x00);
     save_rom(&cpu, "rom");

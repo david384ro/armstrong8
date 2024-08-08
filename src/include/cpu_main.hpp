@@ -13,9 +13,9 @@ struct CPU {
     uint16_t PC;     // Program Counter
     uint8_t flags;  // Processor Status
 
-    uint8_t ram[256]; // 8-bit RAM memory, will be changed later
-    uint8_t xram[512]; // 8-bit EXTENDED RAM memory, will be changed later
-    uint8_t rom[32768]; // 8-bit ROM memory, will be changed later
+    uint8_t ram[255]; // 8-bit RAM memory, will be changed later
+    uint8_t xram[511]; // 8-bit EXTENDED RAM memory, will be changed later
+    uint8_t rom[32767]; // 8-bit ROM memory, will be changed later
     bool halted;
 };
 
