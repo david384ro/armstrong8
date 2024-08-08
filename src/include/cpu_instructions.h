@@ -1,0 +1,16 @@
+enum Instructions {
+    LDA_IMMEDIATE = 0xA9,
+    LDA_ZERO_PAGE = 0xA5,
+    STA_ZERO_PAGE = 0x85,
+    INX = 0xE8,
+    BRK = 0x00,
+    BEQ = 0xF0,
+    BNE = 0xD0,
+    BPL = 0x10,
+    BMI = 0x30,
+    JMP = 0x4C,
+    ADD = 0x60,
+    SUB = 0x61,
+    MUL = 0x62,
+    CMP = 0x63,
+};

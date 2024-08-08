@@ -1,0 +1,6 @@
+.vscode/
+bin/
+cpu/
+ram/
+rom/
+src/main.o
