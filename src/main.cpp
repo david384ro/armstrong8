@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #endif
 
-#include "include/cpu_run.h"
+#include "include/cpu_run.hpp"
 
 void create_directory(const std::string& folder) {
     #ifdef _WIN32
