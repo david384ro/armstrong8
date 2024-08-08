@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 
+//oof
 #ifdef _WIN32
 #include <direct.h>
 #define mkdir _mkdir
@@ -58,7 +59,7 @@ void save_rom(const CPU* cpu, const std::string& folder) {
 
 void save_ram(const CPU* cpu, const std::string& folder) {
     create_directory(folder);
-
+    
     std::string filename = folder + "/ram.bin";
     std::ofstream file(filename, std::ios::binary);
     if (file.is_open()) {
@@ -67,6 +68,16 @@ void save_ram(const CPU* cpu, const std::string& folder) {
         std::cout << "RAM data saved to " << filename << std::endl;
     } else {
         std::cerr << "Error: Unable to open file for writing" << std::endl;
+    }
+
+    std::string xram_filename = folder + "/xram.bin";
+    std::ofstream xram_file(xram_filename, std::ios::binary);
+    if (xram_file.is_open()) {
+        xram_file.write(reinterpret_cast<const char*>(cpu->xram), sizeof(cpu->xram));
+        xram_file.close();
+        std::cout << "XRAM data saved to " << xram_filename << std::endl;
+    } else {
+        std::cerr << "Error: Unable to open file for writing XRAM" << std::endl;
     }
 }
 
@@ -78,6 +89,7 @@ void initialize_cpu(CPU* cpu) {
     cpu->PC = 0x00;
     cpu->flags = 0;
     std::memset(cpu->ram, 0, sizeof(cpu->ram));
+    std::memset(cpu->xram, 0, sizeof(cpu->xram));
     std::memset(cpu->rom, 0, sizeof(cpu->rom));
     cpu->halted = false;
 }
@@ -86,8 +98,12 @@ void initialize_cpu(CPU* cpu) {
     LDA_IMMEDIATE = 0xA9
     LDA_ZERO_PAGE = 0xA5
     STA_ZERO_PAGE = 0x85
+    LDA_NEXT_PAGE = 0xA6
+    STA_NEXT_PAGE = 0x86
+    STA_ZERO_PAGE_X = 0x87
+    STA_NEXT_PAGE_X = 0x88
     INX = 0xE8
-    BRK = 0x00
+    BRK = 0x01
     BEQ = 0xF0
     BNE = 0xD0
     BPL = 0x10
@@ -97,32 +113,30 @@ void initialize_cpu(CPU* cpu) {
     SUB = 0x61
     MUL = 0x62
     CMP = 0x63
-
-    these are the instructions
-    ADD works by taking the value of A and adding it with the next value AFTER ADD (so basically it does A + VALUE), which is true in most of these cases.
+    CMX = 0x64
+    CMXHL = 0x65
 */
 
 int main() {
     CPU cpu;
     initialize_cpu(&cpu);
 
-    // sample program
+    // sample program smr 3 cai comp faster
     uint8_t program[] = {
-        LDA_IMMEDIATE, 0x05,
-        INX,
-        ADD, 0x0A,
-        SUB, 0x03,
-        BEQ, 0x10,
-
-        STA_ZERO_PAGE, 0x00,
-        BRK,
+        LDA_IMMEDIATE, 0xFF,   // 0x00: Load A with 0xFF
+        STA_NEXT_PAGE_X,       // 0x02: Store A at xram[X]
+        INX,                   // 0x03: Increment X
+        CMXHL, 0x00, 0x20,     // 0x04: Compare X with 0x2000
+        BNE, 0x02,             // 0x07: If X != 0x2000, jump back to 0x02
+        BRK                    // 0x09: Break
+        // :brah:
     };
 
     load_program(&cpu, program, sizeof(program), 0x00);
+    save_rom(&cpu, "rom");
     run(&cpu);
 
     save_cpu_state(&cpu, "cpu");
-    save_rom(&cpu, "rom");
     save_ram(&cpu, "ram");
 
     return 0;

@@ -28,7 +28,22 @@ This documentation provides details on the functionality and behavior of each in
    - **Description:** Store the value of the Accumulator (A) into a zero-page address. The address is specified by the next byte in ROM.
    - **Cycles:** 3
 
-4. **`INX`**
+3. **`LDA_NEXT_PAGE`**
+   - **Opcode:** `0xA6`
+   - **Operation:** Load Next Page
+   - **Description:** Load an 8-bit value from an extended RAM address (specified by the next byte in ROM) into the Accumulator (A).
+   - **Cycles:** 3
+   - **Flags Updated:** 
+     - `FLAG_ZERO` is set if the value loaded into A is 0.
+     - `FLAG_NEGATIVE` is set if the most significant bit of the value is 1.
+
+4. **`STA_NEXT_PAGE`**
+   - **Opcode:** `0x86`
+   - **Operation:** Store Next Page
+   - **Description:** Store the value of the Accumulator (A) into an extended RAM address. The address is specified by the next byte in ROM.
+   - **Cycles:** 3
+
+5. **`INX`**
    - **Opcode:** `0xE8`
    - **Operation:** Increment X Register
    - **Description:** Increment the Index Register (X) by 1.
@@ -37,7 +52,7 @@ This documentation provides details on the functionality and behavior of each in
      - `FLAG_ZERO` is set if X becomes 0.
      - `FLAG_NEGATIVE` is set if the most significant bit of X is 1.
 
-5. **`BRK`**
+6. **`BRK`**
    - **Opcode:** `0x00`
    - **Operation:** Break
    - **Description:** Trigger a break (interrupt) and halt the CPU. This instruction simulates an interrupt request.
@@ -45,7 +60,7 @@ This documentation provides details on the functionality and behavior of each in
    - **Flags Updated:** 
      - The `halted` flag is set to `true`, stopping CPU execution.
 
-6. **`BEQ`**
+7. **`BEQ`**
    - **Opcode:** `0xF0`
    - **Operation:** Branch if Equal
    - **Description:** Branch to a target address if the Zero flag is set. The target address is calculated by adding a signed 8-bit offset (specified by the next byte in ROM) to the current PC.
@@ -53,7 +68,7 @@ This documentation provides details on the functionality and behavior of each in
    - **Flags Updated:** 
      - PC is updated by adding the offset if `FLAG_ZERO` is set.
 
-7. **`BNE`**
+8. **`BNE`**
    - **Opcode:** `0xD0`
    - **Operation:** Branch if Not Equal
    - **Description:** Branch to a target address if the Zero flag is not set. The target address is calculated by adding a signed 8-bit offset (specified by the next byte in ROM) to the current PC.
@@ -61,7 +76,7 @@ This documentation provides details on the functionality and behavior of each in
    - **Flags Updated:** 
      - PC is updated by adding the offset if `FLAG_ZERO` is not set.
 
-8. **`BPL`**
+9. **`BPL`**
    - **Opcode:** `0x10`
    - **Operation:** Branch if Plus
    - **Description:** Branch to a target address if the Negative flag is not set. The target address is calculated by adding a signed 8-bit offset (specified by the next byte in ROM) to the current PC.
@@ -69,7 +84,7 @@ This documentation provides details on the functionality and behavior of each in
    - **Flags Updated:** 
      - PC is updated by adding the offset if `FLAG_NEGATIVE` is not set.
 
-9. **`BMI`**
+10. **`BMI`**
    - **Opcode:** `0x30`
    - **Operation:** Branch if Minus
    - **Description:** Branch to a target address if the Negative flag is set. The target address is calculated by adding a signed 8-bit offset (specified by the next byte in ROM) to the current PC.
@@ -77,13 +92,13 @@ This documentation provides details on the functionality and behavior of each in
    - **Flags Updated:** 
      - PC is updated by adding the offset if `FLAG_NEGATIVE` is set.
 
-10. **`JMP`**
+11. **`JMP`**
     - **Opcode:** `0x4C`
     - **Operation:** Jump
     - **Description:** Jump to a target address specified by the next two bytes in ROM (little-endian format). The PC is set to this address.
     - **Cycles:** 3
 
-11. **`ADD`**
+12. **`ADD`**
     - **Opcode:** `0x60`
     - **Operation:** Add
     - **Description:** Add an 8-bit value (specified by the next byte in ROM) to the Accumulator (A) without carry. The result is stored back in A.
@@ -93,7 +108,7 @@ This documentation provides details on the functionality and behavior of each in
       - `FLAG_NEGATIVE` is set if the result’s most significant bit is 1.
       - `FLAG_CARRY` is set if the result exceeds 8 bits (i.e., there is a carry out).
 
-12. **`SUB`**
+13. **`SUB`**
     - **Opcode:** `0x61`
     - **Operation:** Subtract
     - **Description:** Subtract an 8-bit value (specified by the next byte in ROM) from the Accumulator (A). The result is stored back in A.
@@ -103,7 +118,7 @@ This documentation provides details on the functionality and behavior of each in
       - `FLAG_NEGATIVE` is set if the result’s most significant bit is 1.
       - `FLAG_CARRY` is set if the result is not negative (i.e., no borrow was needed).
 
-13. **`MUL`**
+14. **`MUL`**
     - **Opcode:** `0x62`
     - **Operation:** Multiply
     - **Description:** Multiply the Accumulator (A) by an 8-bit value (specified by the next byte in ROM). The result is stored back in A.
@@ -113,7 +128,7 @@ This documentation provides details on the functionality and behavior of each in
       - `FLAG_NEGATIVE` is set if the result’s most significant bit is 1.
       - `FLAG_CARRY` is set if the result exceeds 8 bits (i.e., there is an overflow).
 
-14. **`CMP`**
+15. **`CMP`**
     - **Opcode:** `0x63`
     - **Operation:** Compare
     - **Description:** Compare an 8-bit value (specified by the next byte in ROM) with the Accumulator (A). Set flags based on the result of the comparison.
@@ -123,7 +138,7 @@ This documentation provides details on the functionality and behavior of each in
       - `FLAG_NEGATIVE` is set if the result’s most significant bit is 1.
       - `FLAG_CARRY` is set if the Accumulator (A) is greater than or equal to the value (i.e., no borrow was needed).
 
-15. **Unknown Opcode**
+16. **Unknown Opcode**
     - **Operation:** Error Handling
     - **Description:** If the opcode does not match any known instruction, an error message is printed with the unknown opcode, and the CPU halts.
     - **Cycles:** 1

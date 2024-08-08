@@ -7,14 +7,15 @@
 
 struct CPU {
     uint8_t A;      // Accumulator
-    uint8_t X;      // X Register
+    uint16_t X;      // X Register
     uint8_t Y;      // Y Register
     uint8_t SP;     // Stack Pointer
-    uint8_t PC;     // Program Counter
+    uint16_t PC;     // Program Counter
     uint8_t flags;  // Processor Status
 
     uint8_t ram[256]; // 8-bit RAM memory, will be changed later
-    uint8_t rom[256]; // 8-bit ROM memory, will be changed later
+    uint8_t xram[8192]; // 8-bit EXTENDED RAM memory, will be changed later
+    uint8_t rom[8192]; // 8-bit ROM memory, will be changed later
     bool halted;
 };
 

@@ -30,6 +30,28 @@ void execute_instruction(CPU* cpu) {
             cpu->ram[addr] = cpu->A;
             break;
         }
+        case LDA_NEXT_PAGE: {
+            uint8_t addr = cpu->rom[cpu->PC];
+            cpu->PC++;
+            cpu->A = cpu->xram[addr];
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            break;
+        }
+        case STA_NEXT_PAGE: {
+            uint8_t addr = cpu->rom[cpu->PC];
+            cpu->PC++;
+            cpu->xram[addr] = cpu->A;
+            break;
+        }
+        case STA_NEXT_PAGE_X: {
+            cpu->xram[cpu->X] = cpu->A;
+            break;
+        }
+        case STA_ZERO_PAGE_X: {
+            cpu->ram[cpu->X] = cpu->A;
+            break;
+        }
         case INX: {
             cpu->X++;
             set_flag(cpu, FLAG_ZERO, cpu->X == 0);
@@ -41,35 +63,35 @@ void execute_instruction(CPU* cpu) {
             cpu->halted = true;
             break;
         }
-        case BEQ: {
-            int8_t offset = cpu->rom[cpu->PC];
-            cpu->PC++;
-            if (get_flag(cpu, FLAG_ZERO)) {
-                cpu->PC += offset;
+         case BNE: {
+            uint16_t address = cpu->rom[cpu->PC] | (cpu->rom[cpu->PC + 1] << 8);
+            cpu->PC += 2;
+            if (!get_flag(cpu, FLAG_ZERO)) {
+                cpu->PC = address;
             }
             break;
         }
-        case BNE: {
-            int8_t offset = cpu->rom[cpu->PC];
-            cpu->PC++;
-            if (!get_flag(cpu, FLAG_ZERO)) {
-                cpu->PC += offset;
+        case BEQ: {
+            uint16_t address = cpu->rom[cpu->PC] | (cpu->rom[cpu->PC + 1] << 8);
+            cpu->PC += 2;
+            if (get_flag(cpu, FLAG_ZERO)) {
+                cpu->PC = address;
             }
             break;
         }
         case BPL: {
-            int8_t offset = cpu->rom[cpu->PC];
-            cpu->PC++;
+            uint16_t address = cpu->rom[cpu->PC] | (cpu->rom[cpu->PC + 1] << 8);
+            cpu->PC += 2;
             if (!get_flag(cpu, FLAG_NEGATIVE)) {
-                cpu->PC += offset;
+                cpu->PC = address;
             }
             break;
         }
         case BMI: {
-            int8_t offset = cpu->rom[cpu->PC];
-            cpu->PC++;
+            uint16_t address = cpu->rom[cpu->PC] | (cpu->rom[cpu->PC + 1] << 8);
+            cpu->PC += 2;
             if (get_flag(cpu, FLAG_NEGATIVE)) {
-                cpu->PC += offset;
+                cpu->PC = address;
             }
             break;
         }
@@ -116,6 +138,26 @@ void execute_instruction(CPU* cpu) {
             set_flag(cpu, FLAG_ZERO, (result & 0xFF) == 0);
             set_flag(cpu, FLAG_NEGATIVE, result & 0x80);
             set_flag(cpu, FLAG_CARRY, cpu->A >= value);
+            break;
+        }
+        case CMX: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->PC++;
+            uint16_t result = cpu->X - value;
+            set_flag(cpu, FLAG_ZERO, (result & 0xFF) == 0);
+            set_flag(cpu, FLAG_NEGATIVE, result & 0x80);
+            set_flag(cpu, FLAG_CARRY, cpu->A >= value);
+            break;
+        }
+        case CMXHL: {
+            uint8_t low = cpu->rom[cpu->PC];
+            uint8_t high = cpu->rom[cpu->PC + 1];
+            cpu->PC += 2;
+            uint16_t value = (high << 8) | low;
+            uint16_t result = cpu->X - value;
+            set_flag(cpu, FLAG_ZERO, (result & 0xFFFF) == 0);
+            set_flag(cpu, FLAG_NEGATIVE, result & 0x8000);
+            set_flag(cpu, FLAG_CARRY, cpu->X >= value);
             break;
         }
         default: {
