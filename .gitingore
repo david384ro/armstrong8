@@ -1,6 +1,5 @@
-.vscode/
-bin/
-cpu/
-ram/
-rom/
-src/main.o
+/.vscode/
+/bin/
+*.o
+*.bin
+*.exe
