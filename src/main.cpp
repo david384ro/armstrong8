@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
 
-//oof
 #ifdef _WIN32
 #include <direct.h>
 #define mkdir _mkdir
@@ -100,8 +99,6 @@ void initialize_cpu(CPU* cpu) {
     STA_ZERO_PAGE = 0x85
     LDA_NEXT_PAGE = 0xA6
     STA_NEXT_PAGE = 0x86
-    STA_ZERO_PAGE_X = 0x87
-    STA_NEXT_PAGE_X = 0x88
     INX = 0xE8
     BRK = 0x01
     BEQ = 0xF0
@@ -114,22 +111,19 @@ void initialize_cpu(CPU* cpu) {
     MUL = 0x62
     CMP = 0x63
     CMX = 0x64
-    CMXHL = 0x65
 */
 
 int main() {
     CPU cpu;
     initialize_cpu(&cpu);
 
-    // sample program smr 3 cai comp faster
     uint8_t program[] = {
         LDA_IMMEDIATE, 0xFF,   // 0x00: Load A with 0xFF
-        STA_NEXT_PAGE_X,       // 0x02: Store A at xram[X]
+        STAX_ZERO_PAGE,    // 0x02: Store A at ram[X]
         INX,                   // 0x03: Increment X
-        CMXHL, 0x00, 0x20,     // 0x04: Compare X with 0x2000
-        BNE, 0x02,             // 0x07: If X != 0x2000, jump back to 0x02
+        CMX, 0xFF,             // 0x04: Compare X with 0xFF
+        BNE, 0x02,             // 0x07: If X != 0xFF, jump back to 0x02
         BRK                    // 0x09: Break
-        // :brah:
     };
 
     load_program(&cpu, program, sizeof(program), 0x00);

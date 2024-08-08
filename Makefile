@@ -13,16 +13,11 @@ OBJS = $(SRCS:.cpp=.o)
 all: $(TARGET)
 
 # Rule to build the target
-$(TARGET): $(OBJS)
+$(TARGET): FORCE $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
 # Rule to build object files
-%.o: %.cpp
+%.o: %.cpp FORCE
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up build files
-clean:
-	rm -rf $(TARGET) $(OBJS)
-
-# Phony targets
-.PHONY: all clean
+FORCE:
