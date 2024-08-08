@@ -1,4 +1,4 @@
-#include "cpu_main.h"
+#include "cpu_main.hpp"
 
 void set_flag(CPU* cpu, uint8_t flag, bool value) {
     if (value) {

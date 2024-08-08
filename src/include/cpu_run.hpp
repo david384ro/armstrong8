@@ -1,5 +1,5 @@
-#include "cpu_fde.h"
-#include "cpu_loadp.h"
+#include "cpu_fde.hpp"
+#include "cpu_loadp.hpp"
 
 void run(CPU* cpu) {
     while (!cpu->halted) {

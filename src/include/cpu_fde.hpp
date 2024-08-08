@@ -1,6 +1,6 @@
-#include "cpu_main.h"
-#include "cpu_instructions.h"
-#include "cpu_setflag.h"
+#include "cpu_main.hpp"
+#include "cpu_instructions.hpp"
+#include "cpu_setflag.hpp"
 #include <sstream>
 #include <iomanip>
 
