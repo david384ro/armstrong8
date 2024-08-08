@@ -132,7 +132,3 @@ This documentation provides details on the functionality and behavior of each in
 - **`FLAG_ZERO`**: Indicates whether the result of the last operation was zero.
 - **`FLAG_NEGATIVE`**: Indicates whether the result of the last operation was negative (bit 7 set).
 - **`FLAG_CARRY`**: Indicates whether there was a carry-out from the most significant bit or a borrow in subtraction.
-
-#### Notes
-- The specific cycles and behavior of branching instructions (like BEQ, BNE, etc.) may vary based on the CPU architecture’s implementation of branches.
-- Flag manipulation and results of arithmetic operations are based on 8-bit arithmetic as per the ARMSTRONG 8 specification.
