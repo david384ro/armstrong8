@@ -41,4 +41,9 @@ enum Instructions {
     BNE,             // Branch if Not Equal
     BPL,             // Branch if Plus
     BMI,             // Branch if Minus
+
+    // VRAM Operations
+    LDA_VRAM,
+    STA_VRAM,
+    STAX_VRAM
 };

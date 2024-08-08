@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 
 #ifdef _WIN32
 #include <direct.h>
@@ -8,6 +7,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #endif
+
+#define SDL_MAIN_HANDLED
+#include "include/SDL2/SDL.h"
 
 #include "include/cpu_run.hpp"
 #include "include/ppu/ppu_main.hpp"
@@ -79,6 +81,16 @@ void save_ram(const CPU* cpu, const std::string& folder) {
     } else {
         std::cerr << "Error: Unable to open file for writing XRAM" << std::endl;
     }
+
+    std::string vram_filename = folder + "/vram.bin";
+    std::ofstream vram_file(vram_filename, std::ios::binary);
+    if (vram_file.is_open()) {
+        vram_file.write(reinterpret_cast<const char*>(cpu->ppu.vram), sizeof(cpu->ppu.vram));
+        vram_file.close();
+        std::cout << "VRAM data saved to " << vram_filename << std::endl;
+    } else {
+        std::cerr << "Error: Unable to open file for writing VRAM" << std::endl;
+    }
 }
 
 void initialize_cpu(CPU* cpu) {
@@ -90,35 +102,16 @@ void initialize_cpu(CPU* cpu) {
     cpu->flags = 0;
     std::memset(cpu->ram, 0, sizeof(cpu->ram));
     std::memset(cpu->xram, 0, sizeof(cpu->xram));
+    std::memset(cpu->ppu.vram, 0, sizeof(cpu->ppu.vram));
     std::memset(cpu->rom, 0, sizeof(cpu->rom));
     cpu->halted = false;
 }
-
-/*
-    LDA_IMMEDIATE = 0xA9
-    LDA_ZERO_PAGE = 0xA5
-    STA_ZERO_PAGE = 0x85
-    LDA_NEXT_PAGE = 0xA6
-    STA_NEXT_PAGE = 0x86
-    INX = 0xE8
-    BRK = 0x01
-    BEQ = 0xF0
-    BNE = 0xD0
-    BPL = 0x10
-    BMI = 0x30
-    JMP = 0x4C
-    ADD = 0x60
-    SUB = 0x61
-    MUL = 0x62
-    CMP = 0x63
-    CMX = 0x64
-*/
 
 int main() {
     CPU cpu;
     initialize_cpu(&cpu);
 
-    uint8_t program[] = {0x12, 0xff, 0x0a, 0x15, 0x07, 0xff, 0x18, 0x02, 0x00};
+    uint8_t program[] = {0x12, 0xff, 0x1d, 0x15, 0x07, 0xff, 0x18, 0x02, 0x00};
 
     load_program(&cpu, program, sizeof(program), 0x00);
     save_rom(&cpu, "rom");

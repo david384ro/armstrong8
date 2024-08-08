@@ -201,6 +201,22 @@ void execute_instruction(CPU* cpu) {
             set_flag(cpu, FLAG_NEGATIVE, cpu->Y & 0x80);
             break;
         }
+        case STA_VRAM: {
+            uint8_t addr = cpu->rom[cpu->PC];
+            cpu->ppu.write(addr, cpu->A);
+            cpu->PC++;
+            break;
+        }
+        case STAX_VRAM: {
+            cpu->ppu.write(cpu->X, cpu->A);
+            break;
+        }
+        case LDA_VRAM: {
+            uint8_t addr = cpu->rom[cpu->PC];
+            cpu->A = cpu->ppu.read(addr);
+            cpu->PC++;
+            break;
+        }
         case NOP: {
             break;
         }

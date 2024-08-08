@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "ppu/ppu_main.hpp"
+
 #ifndef CPU_MAIN_H
 #define CPU_MAIN_H
 
@@ -14,9 +16,11 @@ struct CPU {
     uint8_t flags;
 
     uint8_t ram[255]; // 8-bit ZERO PAGE
-    uint8_t xram[1536]; // 8-bit NEXT PAGE (can be used as vram)
+    uint8_t xram[512]; // 8-bit NEXT PAGE
     uint8_t rom[32767]; // 8-bit ROM memory, will be changed later
     bool halted;
+
+    PPU ppu; // the ppu has 1024 bytes of vram
 };
 
 #define FLAG_CARRY     0x01

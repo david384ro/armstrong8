@@ -35,7 +35,10 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"BEQ", BEQ},
     {"BNE", BNE},
     {"BPL", BPL},
-    {"BMI", BMI}
+    {"BMI", BMI},
+    {"LDA_VRAM", LDA_VRAM},
+    {"STA_VRAM", STA_VRAM},
+    {"STAX_VRAM", STAX_VRAM},
 };
 
 Instructions get_opcode(const std::string& mnemonic) {
