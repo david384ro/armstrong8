@@ -120,16 +120,17 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
     }
     case INP:
     {
+        // std::cout << "P:" << static_cast<int>(cpu->ppu.I) << std::endl;
         cpu->ppu.I++;
         set_flag(cpu, FLAG_ZERO, cpu->ppu.I == 0);
-        set_flag(cpu, FLAG_NEGATIVE, cpu->ppu.I & 0x80);
+        set_flag(cpu, FLAG_NEGATIVE, cpu->ppu.I & 0x8000);
         break;
     }
     case DEP:
     {
         cpu->ppu.I--;
         set_flag(cpu, FLAG_ZERO, cpu->ppu.I == 0);
-        set_flag(cpu, FLAG_NEGATIVE, cpu->ppu.I & 0x80);
+        set_flag(cpu, FLAG_NEGATIVE, cpu->ppu.I & 0x8000);
         break;
     }
 
@@ -284,7 +285,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         uint8_t value = cpu->rom[cpu->PC];
         cpu->PC++;
         uint16_t result = cpu->A - value;
-        set_flag(cpu, FLAG_ZERO, (result & 0xFF) == 0);
+        set_flag(cpu, FLAG_ZERO, result == 0);
         set_flag(cpu, FLAG_NEGATIVE, result & 0x80);
         set_flag(cpu, FLAG_CARRY, cpu->A >= value);
         break;
@@ -295,7 +296,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         uint8_t value = cpu->rom[cpu->PC];
         cpu->PC++;
         uint16_t result = cpu->X - value;
-        set_flag(cpu, FLAG_ZERO, (result & 0xFF) == 0);
+        set_flag(cpu, FLAG_ZERO, result == 0);
         set_flag(cpu, FLAG_NEGATIVE, result & 0x80);
         set_flag(cpu, FLAG_CARRY, cpu->X >= value);
         break;
@@ -306,7 +307,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         uint8_t value = cpu->rom[cpu->PC];
         cpu->PC++;
         uint16_t result = cpu->Y - value;
-        set_flag(cpu, FLAG_ZERO, (result & 0xFF) == 0);
+        set_flag(cpu, FLAG_ZERO, result == 0);
         set_flag(cpu, FLAG_NEGATIVE, result & 0x80);
         set_flag(cpu, FLAG_CARRY, cpu->Y >= value);
         break;
@@ -316,10 +317,10 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         uint8_t low = cpu->rom[cpu->PC];
         uint8_t high = cpu->rom[cpu->PC + 1];
         uint16_t value = (high << 8) | low;
-        cpu->PC += 2;
         uint16_t result = cpu->ppu.I - value;
-        set_flag(cpu, FLAG_ZERO, (result & 0xFF) == 0);
-        set_flag(cpu, FLAG_NEGATIVE, result & 0x80);
+        cpu->PC += 2;
+        set_flag(cpu, FLAG_ZERO, result == 0);
+        set_flag(cpu, FLAG_NEGATIVE, (result & 0x8000) != 0);
         set_flag(cpu, FLAG_CARRY, cpu->ppu.I >= value);
         break;
     }
@@ -481,15 +482,15 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
     case TPT3:
     {
         cpu->r4 = cpu->ppu.I;
-        set_flag(cpu, FLAG_ZERO, cpu->t1 == 0);
-        set_flag(cpu, FLAG_NEGATIVE, cpu->t1 & 0x80);
+        set_flag(cpu, FLAG_ZERO, cpu->r4 == 0);
+        set_flag(cpu, FLAG_NEGATIVE, (cpu->r4 & 0x8000) != 0);
         break;
     }
     case TT3P:
     {
         cpu->ppu.I = cpu->r4;
-        set_flag(cpu, FLAG_ZERO, cpu->t1 == 0);
-        set_flag(cpu, FLAG_NEGATIVE, cpu->t1 & 0x80);
+        set_flag(cpu, FLAG_ZERO, cpu->ppu.I == 0);
+        set_flag(cpu, FLAG_NEGATIVE, (cpu->ppu.I & 0x8000) != 0);
         break;
     }
 
@@ -519,8 +520,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
     }
     case STAP_VRAM:
     {
-        uint16_t address = cpu->ppu.I;
-        cpu->ppu.write(address, cpu->A);
+        cpu->ppu.write(cpu->ppu.I, cpu->A);
         break;
     }
     case REFRESH:
