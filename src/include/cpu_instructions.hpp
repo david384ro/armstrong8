@@ -18,6 +18,7 @@ enum Instructions {
     SHR,
     CMP,             // Compare
     CMX,             // Compare X
+    CMY,
 
     // Store Instructions
     STA_ZERO_PAGE,   // Store Accumulator in Zero Page
@@ -41,6 +42,8 @@ enum Instructions {
     // Increment/Decrement Instructions
     INX,             // Increment X Register
     DEX,             // Decrement X Register
+    INY,             // Increment Y Register
+    DEY,             // Decrement Y Register
 
     // Branch Instructions
     BEQ,             // Branch if Equal

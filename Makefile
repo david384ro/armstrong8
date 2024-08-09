@@ -15,6 +15,7 @@ ASSEMBLER_OBJS = $(ASSEMBLER_SRCS:.cpp=.o)
 # Default target
 all: $(TARGET) $(ASSEMBLER_TARGET)
 assembler: $(ASSEMBLER_TARGET)
+armstrong: $(TARGET)
 
 # Rule to build the main target
 $(TARGET): $(OBJS)
