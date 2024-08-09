@@ -107,15 +107,29 @@ void initialize_cpu(CPU* cpu) {
     cpu->halted = false;
 }
 
+#define H 128
+#define W 128
+
 int main() {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+        return 1;
+    }
+    SDL_Window *window = SDL_CreateWindow("armstrong 8 display adapter", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, 0);
+    if (!window) {
+        SDL_Log("Failed to create window: %s", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
     CPU cpu;
     initialize_cpu(&cpu);
 
-    uint8_t program[] = {0x12, 0xff, 0x1d, 0x15, 0x07, 0xff, 0x18, 0x02, 0x00};
+    uint8_t program[] = {0x25, 0xcf, 0x24, 0x14, 0x23, 0x24, 0x1b, 0x0d, 0xff, 0x1e, 0x03, 0x00};
 
     load_program(&cpu, program, sizeof(program), 0x00);
     save_rom(&cpu, "rom");
-    run(&cpu);
+    run(&cpu, window);
 
     save_cpu_state(&cpu, "cpu");
     save_ram(&cpu, "ram");

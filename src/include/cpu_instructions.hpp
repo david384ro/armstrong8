@@ -10,6 +10,12 @@ enum Instructions {
     ADD,             // Add
     SUB,             // Subtract
     MUL,             // Multiply
+    AND,
+    OR,
+    XOR,
+    NOT,
+    SHL,
+    SHR,
     CMP,             // Compare
     CMX,             // Compare X
 
@@ -45,5 +51,7 @@ enum Instructions {
     // VRAM Operations
     LDA_VRAM,
     STA_VRAM,
-    STAX_VRAM
+    STAX_VRAM,
+    REFRESH,
+    FILL
 };

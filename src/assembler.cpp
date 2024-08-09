@@ -14,6 +14,12 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"JMP", JMP},
     {"ADD", ADD},
     {"SUB", SUB},
+    {"AND", AND},
+    {"OR", OR},
+    {"XOR", XOR},
+    {"NOT", NOT},
+    {"SHL", SHL},
+    {"SHR", SHR},
     {"MUL", MUL},
     {"CMP", CMP},
     {"CMX", CMX},
@@ -39,6 +45,8 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"LDA_VRAM", LDA_VRAM},
     {"STA_VRAM", STA_VRAM},
     {"STAX_VRAM", STAX_VRAM},
+    {"REFRESH", REFRESH},
+    {"FILL", FILL}
 };
 
 Instructions get_opcode(const std::string& mnemonic) {

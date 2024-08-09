@@ -4,7 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
-void execute_instruction(CPU* cpu) {
+void execute_instruction(CPU* cpu, SDL_Window *window) {
+    SDL_Surface *surface = SDL_GetWindowSurface(window);
     uint8_t opcode = cpu->rom[cpu->PC];
     cpu->PC++;
     //std::cout << "OP:" << static_cast<int>(opcode) << " PC:" << static_cast<int>(cpu->PC) << std::endl;
@@ -136,6 +137,60 @@ void execute_instruction(CPU* cpu) {
             set_flag(cpu, FLAG_CARRY, result > 0xFF);
             break;
         }
+        case AND: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->PC++;
+            cpu->A = cpu->A & value;
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            set_flag(cpu, FLAG_CARRY, false);
+            break;
+        }
+        case OR: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->PC++;
+            cpu->A = cpu->A | value;
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            set_flag(cpu, FLAG_CARRY, false);
+            break;
+        }
+        case XOR: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->PC++;
+            cpu->A = cpu->A ^ value;
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            set_flag(cpu, FLAG_CARRY, false);
+            break;
+        }
+        case NOT: {
+            cpu->A = ~cpu->A;
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            set_flag(cpu, FLAG_CARRY, false);
+            break;
+        }
+        case SHL: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->PC++;
+            uint16_t result = cpu->A << value;
+            cpu->A = result & 0xFF; // 8-bit result
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            set_flag(cpu, FLAG_CARRY, (result & 0x100) != 0); // Check if bit 8 is set
+            break;
+        }
+        case SHR: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->PC++;
+            uint16_t result = cpu->A >> value;
+            cpu->A = result & 0xFF; // 8-bit result
+            set_flag(cpu, FLAG_ZERO, cpu->A == 0);
+            set_flag(cpu, FLAG_NEGATIVE, cpu->A & 0x80);
+            set_flag(cpu, FLAG_CARRY, (cpu->A & 0x01) != 0); // Check if the least significant bit is set
+            break;
+        }
         case MUL: {
             uint8_t value = cpu->rom[cpu->PC];
             cpu->PC++;
@@ -202,9 +257,11 @@ void execute_instruction(CPU* cpu) {
             break;
         }
         case STA_VRAM: {
-            uint8_t addr = cpu->rom[cpu->PC];
+            uint8_t low = cpu->rom[cpu->PC];
+            uint8_t high = cpu->rom[cpu->PC+1];
+            cpu->PC+=2;
+            uint16_t addr = (high << 8) | low;
             cpu->ppu.write(addr, cpu->A);
-            cpu->PC++;
             break;
         }
         case STAX_VRAM: {
@@ -212,8 +269,37 @@ void execute_instruction(CPU* cpu) {
             break;
         }
         case LDA_VRAM: {
-            uint8_t addr = cpu->rom[cpu->PC];
+            uint8_t low = cpu->rom[cpu->PC];
+            uint8_t high = cpu->rom[cpu->PC+1];
+            cpu->PC+=2;
+            uint16_t addr = (high << 8) | low;
             cpu->A = cpu->ppu.read(addr);
+            break;
+        }
+        case REFRESH: {
+            int W = 128;
+            int H = 128;
+            if (SDL_MUSTLOCK(surface)) {
+                SDL_LockSurface(surface);
+            }
+            uint32_t* dst = (uint32_t*)surface->pixels;
+            uint8_t* src = cpu->ppu.vram;
+            for (int y = 0; y < H; ++y) {
+                for (int x = 0; x < W; ++x) {
+                    uint8_t color = src[y * W + x];
+                    uint32_t rgbaColor = (color << 16) | (color << 8) | color | (255 << 24);
+                    dst[y * (surface->pitch / sizeof(uint32_t)) + x] = rgbaColor;
+                }
+            }
+            if (SDL_MUSTLOCK(surface)) {
+                SDL_UnlockSurface(surface);
+            }
+            SDL_UpdateWindowSurface(window);
+            break;
+        }
+        case FILL: {
+            uint8_t value = cpu->rom[cpu->PC];
+            cpu->ppu.fill_vram(value);
             cpu->PC++;
             break;
         }

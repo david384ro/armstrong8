@@ -20,7 +20,7 @@ struct CPU {
     uint8_t rom[32767]; // 8-bit ROM memory, will be changed later
     bool halted;
 
-    PPU ppu; // the ppu has 1024 bytes of vram
+    PPU ppu; // the ppu has 16kb of vram
 };
 
 #define FLAG_CARRY     0x01
