@@ -7,3 +7,7 @@
 *.exe
 src/main.o
 ram/ram.bin.bak
+*.dll
+*.a
+*.la
+src/lib/
