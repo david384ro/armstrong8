@@ -1,3 +1,0 @@
-FILL, 0x7F
-REFRESH
-BRK
