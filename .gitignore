@@ -11,3 +11,4 @@ ram/ram.bin.bak
 *.a
 *.la
 src/lib/
+!input.bin

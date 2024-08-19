@@ -503,6 +503,37 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         cpu->ppu.write(addr, cpu->A);
         break;
     }
+    case LDIO:
+    {
+        uint8_t low = cpu->rom[cpu->PC];
+        uint8_t high = cpu->rom[cpu->PC + 1];
+        cpu->PC += 2;
+        uint16_t addr = (high << 8) | low;
+        cpu->io = cpu->input[addr];
+        set_flag(cpu, FLAG_ZERO, cpu->io == 0);
+        set_flag(cpu, FLAG_NEGATIVE, cpu->io & 0x80);
+        break;
+    }
+    case LDIOP:
+    {
+        cpu->io = cpu->input[cpu->ppu.I];
+        break;
+    }
+    case STIO_VRAM:
+    {
+        uint8_t low = cpu->rom[cpu->PC];
+        uint8_t high = cpu->rom[cpu->PC + 1];
+        cpu->PC += 2;
+        uint16_t addr = (high << 8) | low;
+        cpu->ppu.write(addr, cpu->io);
+        break;
+    }
+    case STIOX_VRAM:
+    {
+        uint16_t address = cpu->X + cpu->Y;
+        cpu->ppu.write(address, cpu->io);
+        break;
+    }
     case STAX_VRAM:
     {
         uint16_t address = cpu->X + cpu->Y;
@@ -521,6 +552,11 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
     case STAP_VRAM:
     {
         cpu->ppu.write(cpu->ppu.I, cpu->A);
+        break;
+    }
+    case STIOP_VRAM:
+    {
+        cpu->ppu.write(cpu->ppu.I, cpu->io);
         break;
     }
     case REFRESH:

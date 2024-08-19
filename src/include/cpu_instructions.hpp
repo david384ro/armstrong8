@@ -8,15 +8,15 @@ enum Instructions
     JMP, // Jump to Address
 
     // Arithmetic Instructions
-    ADD, // Add
-    SUB, // Subtract
-    MUL, // Multiply
-    AND,
-    OR,
-    XOR,
-    NOT,
-    SHL,
-    SHR,
+    ADD,   // Add
+    SUB,   // Subtract
+    MUL,   // Multiply
+    AND,   // Logical AND
+    OR,    // Logical OR
+    XOR,   // Logical XOR
+    NOT,   // Logical NOT
+    SHL,   // Shift Left
+    SHR,   // Shift Right
     CMP,   // Compare
     CMX,   // Compare X
     CMY,   // Compare Y
@@ -85,5 +85,12 @@ enum Instructions
     STAX_VRAM,
     STAP_VRAM,
     REFRESH,
-    FILL
+    FILL,
+
+    // IO and VRAM
+    LDIO,
+    LDIOP,
+    STIO_VRAM,
+    STIOX_VRAM,
+    STIOP_VRAM
 };

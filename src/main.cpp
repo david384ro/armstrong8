@@ -119,6 +119,53 @@ void save_ram(const CPU *cpu, const std::string &folder)
     }
 }
 
+void save_input(const CPU *cpu, const std::string &folder)
+{
+    create_directory(folder);
+
+    std::string filename = folder + "/input.bin";
+    std::ofstream file(filename, std::ios::binary);
+    if (file.is_open())
+    {
+        file.write(reinterpret_cast<const char *>(cpu->input), sizeof(cpu->input));
+        file.close();
+        std::cout << "Input data saved to " << filename << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error: Unable to open file for writing input data" << std::endl;
+    }
+}
+
+void load_input(CPU *cpu, const std::string &folder, const std::string &filename)
+{
+    std::string filepath = folder + "/" + filename;
+    std::ifstream file(filepath, std::ios::binary);
+
+    if (file.is_open())
+    {
+        file.seekg(0, std::ios::end);
+        std::streamsize size = file.tellg();
+        file.seekg(0, std::ios::beg);
+
+        if (static_cast<unsigned int>(size) > sizeof(cpu->input))
+        {
+            std::cerr << "Error: Input file size exceeds the input buffer size." << std::endl;
+            file.close();
+            return;
+        }
+
+        file.read(reinterpret_cast<char *>(cpu->input), size);
+        file.close();
+
+        std::cout << "Input data loaded from " << filepath << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error: Unable to open file for reading input data" << std::endl;
+    }
+}
+
 void initialize_cpu(CPU *cpu)
 {
     cpu->A = 0;
@@ -131,11 +178,13 @@ void initialize_cpu(CPU *cpu)
     cpu->SP = 0xFF;
     cpu->PC = 0x00;
     cpu->flags = 0;
+    cpu->io = 0;
     cpu->ppu.I = 0;
     std::memset(cpu->ram, 0, sizeof(cpu->ram));
     std::memset(cpu->xram, 0, sizeof(cpu->xram));
     std::memset(cpu->ppu.vram, 0, sizeof(cpu->ppu.vram));
     std::memset(cpu->rom, 0, sizeof(cpu->rom));
+    std::memset(cpu->input, 0, sizeof(cpu->input));
     cpu->halted = false;
 }
 
@@ -160,12 +209,14 @@ int main()
     CPU cpu;
     initialize_cpu(&cpu);
 
-    uint8_t program[] = {0x40, 0x7f, 0x3f, 0x2c, 0xff, 0x3e, 0x35, 0x0f, 0x00, 0x20, 0x38, 0x05, 0x3f, 0x00};
+    uint8_t program[] = {0x42, 0x45, 0x3f, 0x35, 0x0f, 0xf0, 0x3f, 0x38, 0x00, 0x3f, 0x00};
 
     load_program(&cpu, program, sizeof(program), 0x00);
+    load_input(&cpu, "input", "image1.bin");
     save_rom(&cpu, "rom");
     run(&cpu, window);
 
+    save_input(&cpu, "input");
     save_cpu_state(&cpu, "cpu");
     save_ram(&cpu, "ram");
 

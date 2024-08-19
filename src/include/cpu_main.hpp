@@ -19,11 +19,13 @@ struct CPU
     uint8_t SP;    // stack pointer (no implementation currently)
     uint16_t PC;   // program counter
     uint8_t flags; // flag register
-    // max registers: 16, current used: 10
+    uint8_t io;    // io register (use it to hold the current io value)
+    // max registers: 16, current used: 11
 
-    uint8_t ram[255];   // 8-bit ZERO PAGE
-    uint8_t xram[512];  // 8-bit NEXT PAGE/extended
-    uint8_t rom[32767]; // 8-bit ROM memory, will be changed later
+    uint8_t ram[255];     // 8-bit ZERO PAGE
+    uint8_t xram[512];    // 8-bit NEXT PAGE/extended
+    uint8_t rom[32767];   // 8-bit ROM memory, will be changed later
+    uint8_t input[32767]; // IMPORTANT!!! 32K of IO memory!!!!!!!
     bool halted;
 
     PPU ppu; // the ppu has 16kb of vram, 128x128 screen
