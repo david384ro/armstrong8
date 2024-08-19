@@ -11,5 +11,7 @@ ram/ram.bin.bak
 *.a
 *.la
 src/lib/
+src/include/GL
+src/include/SDL2
 !image1.bin
 image converter/
