@@ -11,4 +11,5 @@ ram/ram.bin.bak
 *.a
 *.la
 src/lib/
-!input.bin
+!image1.bin
+image converter/
