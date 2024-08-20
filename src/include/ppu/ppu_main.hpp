@@ -3,11 +3,11 @@
 struct PPU
 {
     uint16_t I; // 16 bit increment register, use it for filling specific parts up in the vram
-    uint8_t vram[16384];
+    uint8_t vram[24768];
 
     void write(uint16_t address, uint8_t value)
     {
-        if (address < 16384)
+        if (address < 24768)
         {
             vram[address] = value;
         }
@@ -19,7 +19,7 @@ struct PPU
 
     void fill_vram(uint8_t value)
     {
-        for (int i = 0; i < 16384; i++)
+        for (int i = 0; i < 24768; i++)
         {
             vram[i] = value;
         }
@@ -27,7 +27,7 @@ struct PPU
 
     uint8_t read(uint16_t address) const
     {
-        if (address < 16384)
+        if (address < 24768)
         {
             return vram[address];
         }

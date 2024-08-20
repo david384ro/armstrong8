@@ -42,6 +42,9 @@ enum Instructions
     TXI,
     TYI,
 
+    TAIO,
+    TIOA,
+
     // Transfer to TMP registers
     TAT1,
     TT1A,
@@ -90,6 +93,9 @@ enum Instructions
     // IO and VRAM
     LDIO,
     LDIOP,
+    STIO,
+    STIOX,
+    STIOP,
     STIO_VRAM,
     STIOX_VRAM,
     STIOP_VRAM

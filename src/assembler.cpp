@@ -78,7 +78,12 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"LDIOP", LDIOP},
     {"STIO_VRAM", STIO_VRAM},
     {"STIOX_VRAM", STIOX_VRAM},
-    {"STIOP_VRAM", STIOP_VRAM}};
+    {"STIOP_VRAM", STIOP_VRAM},
+    {"STIO", STIO},
+    {"STIOX", STIOX},
+    {"STIOP", STIOP},
+    {"TIOA", TIOA},
+    {"TAIO", TAIO}};
 
 Instructions get_opcode(const std::string &mnemonic)
 {
