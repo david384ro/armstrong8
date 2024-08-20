@@ -29,6 +29,10 @@ $(ASSEMBLER_TARGET): $(ASSEMBLER_OBJS)
 src/%.o: src/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
+cleanass:
+	del src\assembler.o
+	del bin\assembler.exe
+
 clean:
 	del src\assembler.o
 	del src\main.o

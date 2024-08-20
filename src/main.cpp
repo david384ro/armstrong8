@@ -209,9 +209,10 @@ int main()
     CPU cpu;
     initialize_cpu(&cpu);
 
-    uint8_t program[] = {0x44, 0x4a, 0x37, 0x0f, 0xbf, 0x60, 0x3a, 0x00, 0x41, 0x00};
+    // uint8_t program[] = {0x44, 0x4a, 0x37, 0x0f, 0xbf, 0x60, 0x3a, 0x00, 0x41, 0x00};
 
-    load_program(&cpu, program, sizeof(program), 0x00);
+    // load_program(&cpu, program, sizeof(program), 0x00);
+    load_program_from_file(&cpu, "rom/program.bin", 0x00);
     load_input(&cpu, "input", "image1.bin");
     save_rom(&cpu, "rom");
     run(&cpu, window);

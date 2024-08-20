@@ -7,6 +7,7 @@
 #include <string>
 #include <stdexcept>
 #include <iomanip>
+#include <algorithm>
 
 std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"BRK", BRK},
@@ -84,10 +85,32 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"STIOP", STIOP},
     {"TIOA", TIOA},
     {"TAIO", TAIO}};
+std::string ltrim(const std::string &str)
+{
+    std::string s = str;
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch)
+                                    { return !std::isspace(ch); }));
+    return s;
+}
 
+std::string rtrim(const std::string &str)
+{
+    std::string s = str;
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch)
+                         { return !std::isspace(ch); })
+                .base(),
+            s.end());
+    return s;
+}
+
+std::string trim(const std::string &str)
+{
+    return ltrim(rtrim(str));
+}
 Instructions get_opcode(const std::string &mnemonic)
 {
-    auto it = mnemonic_to_opcode.find(mnemonic);
+    std::string trimmedmnemonic = trim(mnemonic);
+    auto it = mnemonic_to_opcode.find(trimmedmnemonic);
     if (it != mnemonic_to_opcode.end())
     {
         return it->second;
@@ -135,28 +158,24 @@ std::vector<uint8_t> process_assembly_file(const std::string &filename)
     {
         line = remove_comments(line);
         if (line.empty())
-            continue; // Skip empty lines
+            continue;
 
         auto parts = parse_instruction(line);
         if (parts.empty())
-            continue; // Skip if no parts
+            continue;
 
         try
         {
-            // Assume the first part is the mnemonic
             std::string mnemonic = parts[0];
             Instructions opcode = get_opcode(mnemonic);
             bytecode.push_back(static_cast<uint8_t>(opcode));
 
-            // Handle arguments
             for (std::size_t i = 1; i < parts.size(); ++i)
             {
                 std::string arg = parts[i];
-                // Remove any leading/trailing whitespace
                 arg.erase(0, arg.find_first_not_of(" \t"));
                 arg.erase(arg.find_last_not_of(" \t") + 1);
 
-                // Check if the argument is in hexadecimal format
                 if (arg.find("0x") == 0)
                 {
                     uint8_t value = std::stoi(arg, nullptr, 16);
@@ -164,7 +183,6 @@ std::vector<uint8_t> process_assembly_file(const std::string &filename)
                 }
                 else
                 {
-                    // Handle other formats if needed
                 }
             }
         }
@@ -177,16 +195,19 @@ std::vector<uint8_t> process_assembly_file(const std::string &filename)
     return bytecode;
 }
 
-void print_bytecode_array(const std::vector<uint8_t> &bytecode)
+void write_bytecode_to_file(const std::vector<uint8_t> &bytecode, const std::string &filename)
 {
-    std::cout << "uint8_t program[] = {";
-    for (size_t i = 0; i < bytecode.size(); ++i)
+    std::ofstream file(filename, std::ios::binary);
+    if (!file.is_open())
     {
-        if (i > 0)
-            std::cout << ", ";
-        std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytecode[i]);
+        throw std::runtime_error("Error opening file for writing: " + filename);
     }
-    std::cout << "};" << std::endl;
+
+    file.write(reinterpret_cast<const char *>(bytecode.data()), bytecode.size());
+    if (!file)
+    {
+        throw std::runtime_error("Error writing to file: " + filename);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -201,7 +222,8 @@ int main(int argc, char *argv[])
     {
         std::string filename = argv[1];
         std::vector<uint8_t> bytecode = process_assembly_file(filename);
-        print_bytecode_array(bytecode);
+        write_bytecode_to_file(bytecode, "rom/program.bin");
+        std::cout << "Bytecode written to rom/program.bin" << std::endl;
     }
     catch (const std::exception &e)
     {
