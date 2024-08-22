@@ -28,7 +28,7 @@ struct CPU
     uint8_t input[32767]; // IMPORTANT!!! 32K of IO memory!!!!!!!
     bool halted;
 
-    PPU ppu; // the ppu has 16kb of vram, 128x128 screen
+    PPU ppu; // the ppu has 24kb of vram, 172x144 screen
 };
 
 #define FLAG_CARRY 0x01
