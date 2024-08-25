@@ -43,10 +43,10 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"DEX", DEX},
     {"INY", INY},
     {"DEY", DEY},
-    {"BEQ", BEQ},
-    {"BNE", BNE},
-    {"BPL", BPL},
-    {"BMI", BMI},
+    {"JEQ", JEQ},
+    {"JNE", JNE},
+    {"BPL", JPL},
+    {"JMI", JMI},
     {"LDA_VRAM", LDA_VRAM},
     {"STA_VRAM", STA_VRAM},
     {"STAX_VRAM", STAX_VRAM},
@@ -84,7 +84,9 @@ std::unordered_map<std::string, Instructions> mnemonic_to_opcode = {
     {"STIOX", STIOX},
     {"STIOP", STIOP},
     {"TIOA", TIOA},
-    {"TAIO", TAIO}};
+    {"TAIO", TAIO},
+    {"GPRN", GPRN}};
+
 std::string ltrim(const std::string &str)
 {
     std::string s = str;

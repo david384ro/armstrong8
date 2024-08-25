@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <chrono>
 
 // tip: dont be stupid and look for the simplest way.
 void execute_instruction(CPU *cpu, SDL_Window *window)
@@ -142,7 +143,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         cpu->halted = true;
         break;
     }
-    case BNE:
+    case JNE:
     {
         uint16_t address = cpu->rom[cpu->PC] /*| (cpu->rom[cpu->PC + 1] << 8)*/;
         // std::cout << address << std::endl;
@@ -153,7 +154,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         }
         break;
     }
-    case BEQ:
+    case JEQ:
     {
         uint16_t address = cpu->rom[cpu->PC] /*| (cpu->rom[cpu->PC + 1] << 8)*/;
         cpu->PC++;
@@ -163,7 +164,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         }
         break;
     }
-    case BPL:
+    case JPL:
     {
         uint16_t address = cpu->rom[cpu->PC] /*| (cpu->rom[cpu->PC + 1] << 8)*/;
         cpu->PC++;
@@ -173,7 +174,7 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
         }
         break;
     }
-    case BMI:
+    case JMI:
     {
         uint16_t address = cpu->rom[cpu->PC] /*| (cpu->rom[cpu->PC + 1] << 8)*/;
         cpu->PC++;
@@ -632,6 +633,13 @@ void execute_instruction(CPU *cpu, SDL_Window *window)
     }
     case NOP:
     {
+        break;
+    }
+    case GPRN:
+    {
+        static uint64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        seed = (seed ^ (seed >> 33)) * 0xBF58476D1CE4E5B9 + 0x94D049BB133111EB;
+        cpu->A = seed & 0xFF;
         break;
     }
     // case CMXHL: {

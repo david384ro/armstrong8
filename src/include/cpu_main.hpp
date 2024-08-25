@@ -4,8 +4,7 @@
 
 #include "ppu/ppu_main.hpp"
 
-#ifndef CPU_MAIN_H
-#define CPU_MAIN_H
+#pragma once
 
 struct CPU
 {
@@ -39,5 +38,3 @@ struct CPU
 #define FLAG_UNUSED 0x20
 #define FLAG_OVERFLOW 0x40
 #define FLAG_NEGATIVE 0x80
-
-#endif // CPU_MAIN_H

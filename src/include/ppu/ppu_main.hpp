@@ -1,5 +1,4 @@
-#ifndef PPU_MAIN_H
-#define PPU_MAIN_H
+#pragma once
 struct PPU
 {
     uint16_t I; // 16 bit increment register, use it for filling specific parts up in the vram
@@ -38,4 +37,3 @@ struct PPU
         }
     }
 };
-#endif // PPU_MAIN_H

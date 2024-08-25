@@ -76,11 +76,11 @@ enum Instructions
     INP, // Increment PPU's I Register
     DEP, // Decrement PPU's I Regsiter
 
-    // Branch Instructions
-    BEQ, // Branch if Equal
-    BNE, // Branch if Not Equal
-    BPL, // Branch if Plus
-    BMI, // Branch if Minus
+    // Jump Instructions
+    JEQ, // Jump if Equal
+    JNE, // Jump if Not Equal
+    JPL, // Jump if Plus
+    JMI, // Jump if Minus
 
     // VRAM Operations
     LDA_VRAM,
@@ -98,5 +98,7 @@ enum Instructions
     STIOP,
     STIO_VRAM,
     STIOX_VRAM,
-    STIOP_VRAM
+    STIOP_VRAM,
+
+    GPRN
 };
