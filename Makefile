@@ -1,5 +1,6 @@
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++11 -Os -ffunction-sections -fdata-sections -Wl,--gc-sections
+#CFLAGS = -Wall -Wextra -std=c++11 -O3 -march=native -flto -funroll-loops
 TARGET = bin/armstrong
 ASSEMBLER_TARGET = bin/assembler
 
@@ -14,7 +15,7 @@ assembler: $(ASSEMBLER_TARGET)
 armstrong: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -Isrc/include/SDL2 -o $(TARGET) $(OBJS) -Lsrc/lib -lmingw32 -lSDL2main -lSDL2 -luser32
+	$(CC) $(CFLAGS) -Isrc/include/SDL2 -o $(TARGET) $(OBJS) -Lsrc/lib -lSDL2 -lSDL2main -lmingw32 -luser32
 	strip --strip-all $(TARGET).exe -o $(TARGET)stripped.exe
 
 $(ASSEMBLER_TARGET): $(ASSEMBLER_OBJS)
